@@ -21,28 +21,35 @@ Here are the key **additional** design goals:
 Represented by the following simply grammar ABNF specification
 
 ```ABNF
+ver = "A"
+delim = %x2E ; '.'
+sharp = %x23 ; '\#' (reset operation indicative)
+dash = %x2D ; '\-' (parent span id indicative)
+under = %x5F ; '\_' (spin operation indicative)
+
 ;; Core Rules
 ;ALPHA = %x41-5A / %x61-7A
 ;DIGIT = %x30-39
 ;HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F" ;
 
 hexupper = DIGIT / %x41-46; restrict hex to uppercase only
-
-vector = ver delim base suffix
-ver = "A"
-base = 21char lastChar
 char = DIGIT / ALPHA / %x2F / %x2B ; base64 characters
 lastChar = "A" / "Q" / "g" / "w" ; base64 characters with four least significant bits of zero
-suffix = init / init vector
-init = delim tick / sharp id delim tick / dash id delim tick
-vector = term / term vector
-term = delim tick / under id delim tick
+
 tick = 1*8(hexupper) ; hex encoded counter
 id = 16(hexupper); hex encoded id
-delim = %x2E ; '.'
-sharp = %x23 ; '\#' (reset operation indicative)
-dash = %x2D ; '\-' (parent span id indicative)
-under = %x5F ; '\_' (spin operation indicative)
+
+base = 21char lastChar
+
+init = delim tick
+init =/ sharp id delim tick
+init =/ dash id delim tick
+
+term = delim tick / under id delim tick
+suffix = init / init vector
+
+vector = ver delim base suffix
+vector = term / term vector
 ```
 
 **Maximum length**: 128 bytes (assuming a UTF-8 encoding)

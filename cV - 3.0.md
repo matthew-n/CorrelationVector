@@ -44,12 +44,11 @@ base = 21char lastChar
 init = delim tick
 init =/ sharp id delim tick
 init =/ dash id delim tick
+init =/ under id delim tick
 
-term = delim tick / under id delim tick
 suffix = init / init vector
 
 vector = ver delim base suffix
-vector = term / term vector
 ```
 
 **Maximum length**: 128 bytes (assuming a UTF-8 encoding)

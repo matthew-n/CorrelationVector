@@ -20,21 +20,30 @@ Here are the key **additional** design goals:
 
 Represented by the following simply grammar ABNF specification
 
-1. vector = ver delim base suffix
-2. ver = "A"
-3. base = 21char lastChar
-4. char = %x30-39 / %x41-5A / %61-7A / %x2F / %2B ; base64 characters
-5. lastChar = "A" / "Q" / "g" / "w" ; base64 characters with four least significant bits of zero
-6. suffix = init / init vector
-7. init = delim tick / sharp id delim tick / dash id delim tick
-8. vector = term / term vector
-9. term = delim tick / under id delim tick
-10. tick = 1*8(%x30-39 / %x41-46) ; hex encoded counter
-11. id = 16(%x30-39 / %x41-46) ; hex encoded id
-12. delim = %x2E ; '.'
-13. sharp = %x23 ; '\#' (reset operation indicative)
-14. dash = %x2d ; '\-' (parent span id indicative)
-15. under = %x5f ; '\_' (spin operation indicative)
+```ABNF
+;; Core Rules
+;ALPHA = %x41-5A / %x61-7A
+;DIGIT = %x30-39
+;HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F" ;
+
+hexupper = DIGIT / %x41-46; restrict hex to uppercase only
+
+vector = ver delim base suffix
+ver = "A"
+base = 21char lastChar
+char = DIGIT / ALPHA / %x2F / %x2B ; base64 characters
+lastChar = "A" / "Q" / "g" / "w" ; base64 characters with four least significant bits of zero
+suffix = init / init vector
+init = delim tick / sharp id delim tick / dash id delim tick
+vector = term / term vector
+term = delim tick / under id delim tick
+tick = 1*8(hexupper) ; hex encoded counter
+id = 16(hexupper); hex encoded id
+delim = %x2E ; '.'
+sharp = %x23 ; '\#' (reset operation indicative)
+dash = %x2D ; '\-' (parent span id indicative)
+under = %x5F ; '\_' (spin operation indicative)
+```
 
 **Maximum length**: 128 bytes (assuming a UTF-8 encoding)
 
